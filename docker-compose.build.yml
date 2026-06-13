@@ -1,0 +1,15 @@
+# Docker Compose override file for local development/building
+# Usage: docker compose -f docker-compose.yml -f docker-compose.build.yml up -d --build
+
+services:
+  orpheus-poll:
+    image: orpheus-poll-to-playlist:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+  poll-notifier:
+    image: orpheus-poll-to-playlist-notifier:local
+    build:
+      context: ./notifier
+      dockerfile: Dockerfile

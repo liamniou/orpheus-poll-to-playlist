@@ -1,0 +1,29 @@
+# Python
+__pycache__
+*.pyc
+*.pyo
+venv/
+.env
+
+# Node
+frontend/node_modules
+frontend/dist
+
+# Data
+data/
+downloads/
+*.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore

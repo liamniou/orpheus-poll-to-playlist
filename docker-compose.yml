@@ -1,0 +1,49 @@
+services:
+  orpheus-poll:
+    # image: ghcr.io/liamniou/orpheus-poll-to-playlist:latest
+    # Uncomment to build locally instead of using registry image
+    build: .
+    container_name: orpheus-poll-to-playlist
+    ports:
+      - "7575:7575"
+    volumes:
+      - ./data:/app/data
+      - ./downloads:/app/downloads
+    environment:
+      - ORPHEUS_API_KEY=${ORPHEUS_API_KEY:-}
+      - ORPHEUS_SESSION_COOKIE=${ORPHEUS_SESSION_COOKIE:-}
+      - CACHE_TTL_MINUTES=${CACHE_TTL_MINUTES:-30}
+      - QBIT_URL=${QBIT_URL:-}
+      - QBIT_USER=${QBIT_USER:-}
+      - QBIT_PASSWORD=${QBIT_PASSWORD:-}
+      - QBIT_CATEGORY=${QBIT_CATEGORY:-orpheus}
+      - NAVIDROME_URL=${NAVIDROME_URL:-}
+      - NAVIDROME_USER=${NAVIDROME_USER:-}
+      - NAVIDROME_PASSWORD=${NAVIDROME_PASSWORD:-}
+      - NAVIDROME_MUSIC_FOLDER=${NAVIDROME_MUSIC_FOLDER:-}
+      - NAVIDROME_LIBRARY_ID=${NAVIDROME_LIBRARY_ID:-1}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:7575/api/health').raise_for_status()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  poll-notifier:
+    # image: ghcr.io/liamniou/orpheus-poll-to-playlist-notifier:latest
+    # Uncomment to build locally instead of using registry image
+    build: ./notifier
+    container_name: orpheus-poll-notifier
+    volumes:
+      - ./data:/app/data
+    environment:
+      - ORPHEUS_SESSION_COOKIE=${ORPHEUS_SESSION_COOKIE:-}
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL:-}
+      - CRON_SCHEDULE=${NOTIFIER_CRON_SCHEDULE:-0 9 * * *}
+      - RUN_ON_START=${NOTIFIER_RUN_ON_START:-true}
+    restart: unless-stopped
+    depends_on:
+      orpheus-poll:
+        condition: service_healthy
