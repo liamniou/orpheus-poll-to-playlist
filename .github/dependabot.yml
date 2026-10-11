@@ -1,0 +1,26 @@
+version: 2
+updates:
+  - package-ecosystem: "docker"
+    directories:
+      - "/"
+      - "/notifier"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+  - package-ecosystem: "pip"
+    directories:
+      - "/"
+      - "/notifier"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    versioning-strategy: "increase"
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
