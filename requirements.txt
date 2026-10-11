@@ -1,5 +1,5 @@
 # Backend dependencies
-fastapi==0.109.0
+fastapi==0.143.0
 uvicorn[standard]==0.27.0
 httpx==0.26.0
 beautifulsoup4==4.12.3
